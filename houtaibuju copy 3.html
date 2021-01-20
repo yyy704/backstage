@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>layout 后台大布局 - Layui</title>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+</head>
+
+<body class="layui-layout-body">
+    <div class="layui-layout layui-layout-admin">
+        <!-- 引入头部 -->
+        {{ include './gonk/tou.html'}}
+
+        <!-- 引入头部 -->
+        {{ include './gonk/zuolan..html'}}
+
+        <div class="layui-body">
+            <!-- 内容主体区域 -->
+            <div style="padding: 15px;">
+                <button type="button" class="layui-btn" id="tianjia">
+                    <i class="layui-icon">&#xe608;</i> 添加
+                </button>
+                <table class="layui-table">
+                    <colgroup>
+                        <col width="150">
+                        <col width="200">
+                        <col>
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>名称</th>
+                            <th>时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 引入头部 -->
+        {{ include './gonk/dibu.html'}}
+
+    </div>
+    <script src="/layui/layui.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+    <script src="./time工具/timegonju.js"></script>
+    <script>
+        //JavaScript代码区域
+        // layui会自动把layer变为全局
+        layui.use(['layer', 'element'], function() {
+            var element = layui.element;
+            var layer = layui.layer;
+        });
+
+        function sjkpinjie(dete) {
+            let jieguo = '';
+            dete.forEach((k, v) => {
+                let {
+                    id,
+                    name,
+                    time
+                } = dete[v];
+                time = moment(time).format('YYYY-MM-DD HH:mm:ss');
+                jieguo += ` <tr>
+                                <td>${v+1}</td>
+                                <td>${name}</td>
+                                <td>${time}</td>
+                                <td>
+                                    <button type="button" zdy="${id}" class="layui-btn bj"><i class="layui-icon"></i></button>
+                                    <button type="button" zdy="${id}" class="layui-btn layui-btn-danger sc"><i class="layui-icon"></i></button>
+                                </td>
+                            </tr>`;
+                $('#tbody').html(jieguo);
+            })
+        }
+
+        // 事件委托 点击按钮删除当前tr
+        $('#tbody').on('click', '.sc', function() {
+            // 点击删除按钮 移除当前按钮的tr
+            // $(this).parents('tr').remove()
+
+            let t = $(this); // 用来储存当前this
+
+            // 拿到自定义属性
+            let zdy = $(this).attr('zdy');
+
+            // 防止误删除
+            layer.confirm('确定删除吗', {
+                btn: ['确定', '取消'] //按钮
+            }, function() {
+                // 发送ajax请求去数据库查找删除
+                $.ajax({
+                    type: 'post',
+                    url: '/romet',
+                    data: {
+                        id: zdy
+                    },
+                    dataType: 'json'
+                }).then(res => {
+                    console.log(res);
+                    let {
+                        errcode,
+                        msjj
+                    } = res;
+                    // 删除成功
+                    if (errcode == 1) {
+                        // 点击删除按钮 移除当前按钮的tr
+                        t.parents('tr').remove()
+                        layer.closeAll(); //疯狂模式，关闭所有层
+                        layer.msg(msjj);
+                    } else {
+                        // 失败
+                        layer.closeAll(); //疯狂模式，关闭所有层
+                        layer.msg(msjj);
+                    }
+                })
+            })
+        })
+
+        // ajax获取动态获取数据库的信息
+        function Sendrequest() {
+            $.ajax({
+                type: 'post',
+                url: '/data',
+                data: 'json'
+            }).then(res => {
+                // 动态创建tr，追加到tboby下面去
+                sjkpinjie(res);
+            })
+        };
+        Sendrequest();
+
+        // 事件委托，点击按钮跳转到编辑页面
+        $('#tbody').on('click', '.bj', function() {
+            console.log($(this).attr('zdy'));
+            let id = $(this).attr('zdy');
+            location.href = '/index?id=' + id;
+        })
+
+        // 点击按钮跳转到添加页面
+        $('#tianjia').on('click', function() {
+            location.href = '/index4';
+        })
+    </script>
+</body>
+
+</html>
