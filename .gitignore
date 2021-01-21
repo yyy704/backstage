@@ -102,3 +102,6 @@ dist
 
 # TernJS port file
 .tern-port
+
+# 不需要上传的文件
+layui-v2.5.7.zip
