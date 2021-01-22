@@ -3,7 +3,7 @@ const app = express();
 const path = require('path');
 
 // 引入模块
-const router = require('./分层/router')
+const router = require('./router-controller/router')
 
 const artTemplate = require('art-template');
 const express_template = require('express-art-template');

@@ -14,19 +14,19 @@ controller.abult = (req, res) => {
 }
 
 controller.index = (req, res) => {
-    res.render('./views/houtaibuju copy.html')
+    res.render('./views/houtaibuju-Edit-category.html')
 }
 
 controller.index2 = (req, res) => {
-    res.render('./views/houtaibuju copy 2.html')
+    res.render('./views/houtaibuju-Article-management.html')
 }
 
 controller.index3 = (req, res) => {
-    res.render('./views/houtaibuju copy 3.html')
+    res.render('./views/houtaibuju-Classified-management.html')
 }
 
 controller.index4 = (req, res) => {
-    res.render('./views/houtaibuju copy 4.html')
+    res.render('./views/houtaibuju-Add-category.html')
 }
 
 // 获取数据库信息
