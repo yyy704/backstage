@@ -11,10 +11,10 @@
 <body class="layui-layout-body">
     <div class="layui-layout layui-layout-admin">
         <!-- 引入头部 -->
-        {{ include './gonk/tou.html'}}
+        {{ include '../gonk/tou.html'}}
 
         <!-- 引入左侧 -->
-        {{ include './gonk/zuolan..html'}}
+        {{ include '../gonk/zuolan..html'}}
 
         <div class="layui-body">
             <!-- 内容主体区域 -->
@@ -36,7 +36,7 @@
                     <br>
                     <div class="layui-form-item">
                         <div class="layui-input-block">
-                            <button class="layui-btn" lay-submit lay-filter="formDemo">添加</button>
+                            <button class="layui-btn" lay-submit lay-filter="formDemo">提交编辑</button>
                             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
                         </div>
                     </div>
@@ -45,12 +45,35 @@
         </div>
 
         <!-- 引入底部 -->
-        {{ include './gonk/dibu.html'}}
+        {{ include '../gonk/dibu.html'}}
     </div>
     <script src="/layui/layui.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
     <script src="./time工具/timegonju.js"></script>
     <script>
+        // 回显需要编辑的数据
+        // 获取地址栏中的id参数
+        let url = location.href;
+        let reg = /id=(.*)&?/;
+        // [...伪数组] => 转化为真数组
+        // [,id] 解构赋值数组 舍弃第一个参数，只要第二个参数
+        let [, id] = [...reg.exec(url)];
+        console.log('--' + id);
+        $.ajax({
+            url: '/bianji',
+            data: {
+                id
+            }
+        }).then(src => {
+            let {
+                name,
+                time
+            } = src[0];
+            time = moment(time).format('YYYY-MM-DD HH:mm:ss');
+            $('.layui-input').val(name);
+            $('#test5').val(time);
+        })
+
         //JavaScript代码区域
         //Demo
         layui.use(['form', 'laydate', 'layer', 'element'], function() {
@@ -61,16 +84,16 @@
 
             //监听提交
             form.on('submit(formDemo)', function(data) {
-                // 拿到用户输入要添加的值
                 let sj = $('#test5').val();
                 let mc = $('.layui-input').val();
                 // 发送ajax请求
                 $.ajax({
                     type: 'post',
-                    url: '/addtian',
+                    url: '/xiugai',
                     data: {
+                        sj,
                         mc,
-                        sj
+                        id
                     }
                 }).then(src => {
                     let {

@@ -18,6 +18,7 @@ router.get('/index3', controller.index3)
 
 router.get('/index4', controller.index4)
 
+// 分类管理
 // 获取数据库信息
 router.post('/data', controller.data)
 
@@ -32,6 +33,10 @@ router.post('/xiugai', controller.xiugai)
 
 // 添加数据
 router.post('/addtian', controller.addtian)
+
+// 文章管理
+// 获取文章数据
+router.get('/getarticle', controller.getarticle)
 
 
 // 暴露路由
