@@ -20,13 +20,19 @@
         <div class="layui-body">
             <!-- 内容主体区域 -->
             <div style="padding: 15px;">
-                <h2>文章管理</h2>
+                <h2 style="text-align: center;">文章管理</h2>
+                <p>
+                    <button type="button" class="layui-btn" id="tianjia">
+                        <i class="layui-icon">&#xe608;</i> 添加文章
+                    </button>
+                </p>
                 <table id="demo" lay-filter="test"></table>
 
             </div>
         </div>
 
         <script type="text/html" id="barDemo">
+            <a class="layui-btn layui-btn-xs layui-bg-blue" lay-event="detail">查看内容</a>
             <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
             <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
         </script>
@@ -69,7 +75,8 @@
                             title: 'ID',
                             width: 80,
                             sort: true,
-                            fixed: 'left'
+                            fixed: 'left',
+                            hide: true
                         }, {
                             field: 'title',
                             title: '标题',
@@ -78,21 +85,36 @@
                             field: 'content',
                             title: '内容',
                             width: 80,
-                            sort: true
+                            sort: true,
+                            hide: true
                         }, {
                             field: 'author',
                             title: '作者',
                             width: 80
                         }, {
-                            field: 'describe',
-                            title: '描述',
-                            width: 177
+                            field: 'cover',
+                            title: '封面',
+                            width: 177,
+                            templet: (aiaia) => {
+                                // 利用正则判断图片是否为真，为真就显示
+                                let tp = aiaia.cover;
+                                let zpz = /.\.[a-zA-Z]+/;
+                                if (zpz.test(tp)) {
+                                    let img = `<img src="${tp}" alt="">`
+                                    return img;
+                                }
+                            }
+                        }, {
+                            field: 'name',
+                            title: '分类',
+                            width: 100
                         }, {
                             field: 'Launchtime',
                             title: '发送时间',
                             width: 180,
                             sort: true,
                             templet: (aiaia) => {
+                                // 可视化时间格式
                                 let shijian = aiaia.Launchtime;
                                 shijian = moment(shijian).format('YYYY-MM-DD HH:mm:ss');
                                 return shijian;
@@ -103,11 +125,12 @@
                             width: 80,
                             sort: true,
                             templet: (aiaia) => {
+                                // 给元素添加样式
                                 let zhi = aiaia.state;
                                 let zhuangtai = {
-                                    0: '已下架',
-                                    1: '已上架',
-                                    2: '待审核'
+                                    0: '<span class="layui-badge" style="background-color: red;">已下架</span>',
+                                    1: '<span class="layui-badge" style="background-color: #5FB878;">已上架</span>',
+                                    2: `<span class="layui-badge layui-bg-orange">待审核</span>`
                                 };
                                 let chuli = zhuangtai[zhi];
                                 return chuli;
@@ -116,14 +139,70 @@
                             fixed: 'right',
                             title: '操作',
                             toolbar: '#barDemo',
-                            width: 150
+                            width: 200,
+                            templet: (aiaia) => {}
                         }
                     ]
                 ]
 
             });
 
+            table.on('tool(test)', function(obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+                var data = obj.data; //获得当前行数据
+                var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+                var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+                switch (layEvent) {
+                    case 'del':
+                        layer.confirm('真的删除行么', function(index) {
+                            let id = data.id;
+                            obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                            //向服务端发送删除指令
+                            $.ajax({
+                                type: "post",
+                                url: '/articledeletion',
+                                data: {
+                                    id
+                                }
+                            }).then(res => {
+                                let {
+                                    errcode,
+                                    msjj
+                                } = res;
+                                // 删除成功
+                                if (errcode == 1) {
+                                    layer.closeAll(); //疯狂模式，关闭所有层
+                                    layer.msg(msjj);
+                                } else {
+                                    // 失败
+                                    layer.closeAll(); //疯狂模式，关闭所有层
+                                    layer.msg(msjj);
+                                }
+                            })
+                        });
+                        break;
+                    case 'edit':
+                        let id = data.id;
+                        location.href = `/index6?id=${id}`;
+                        break;
+                    case 'detail':
+                        let nr = data.content;
+                        //查看内容
+                        layer.open({
+                            type: 1,
+                            skin: 'layui-layer-rim', //加上边框
+                            area: ['420px', '240px'], //宽高
+                            content: nr
+                        });
+                        break;
+                }
 
+
+
+            });
+
+            $('#tianjia').on('click', function() {
+                location.href = '/index5'
+            })
         })
     </script>
 </body>

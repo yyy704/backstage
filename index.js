@@ -21,6 +21,7 @@ app.set('view engine', 'html');
 // 内置中间件托管静态资源
 app.use(express.static(path.join(__dirname), ''))
 
+
 // 获取body参数中间件
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({
