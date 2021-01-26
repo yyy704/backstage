@@ -56,7 +56,7 @@
                     <div class="layui-inline">
                         <label class="layui-form-label">时间</label>
                         <div class="layui-input-inline">
-                            <input type="text" name="time" class="layui-input" id="test5" autocomplete="off" placeholder="yyyy-MM-dd HH:mm:ss">
+                            <input type="text" name="time" class="layui-input" id="test5" autocomplete="off" lay-verify="required" placeholder="yyyy-MM-dd HH:mm:ss">
                         </div>
                     </div>
                     <div class="layui-form-item">
@@ -70,7 +70,6 @@
                         <label class="layui-form-label">内容</label>
                         <div class="layui-input-inline">
                             <div id="fuwenbeng"></div>
-                            <!-- <textarea name="content" placeholder="请输入内容" class="layui-textarea"></textarea> -->
                         </div>
                     </div>
                     <br>
@@ -93,15 +92,9 @@
     <script src="../time工具/timegonju.js"></script>
     <script src="../nprogress-jc/nprogress.js"></script>
     <script src="../progress/progress.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/wangeditor@latest/dist/wangEditor.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/wangeditor@latest/dist/wangEditor.min.js"></script>
 
-    <script>
-        // 初始化富文本
-        const E = window.wangEditor
-        const editor = new E('#fuwenbeng')
-            // 或者 const editor = new E( document.getElementById('div1') )
-        editor.create()
-
+    <script type="text/javascript">
         //JavaScript代码区域
         //Demo
         layui.use(['form', 'laydate', 'layer', 'element', 'upload'], function() {
@@ -111,25 +104,20 @@
             var element = layui.element;
             var upload = layui.upload; //得到 upload 对象
 
-            //创建一个上传组件
-            upload.render({
-                elem: '#cover_img_upload',
-                url: '/uploadpictures',
-                done: function(res, index, upload) { //上传后的回调
-                        let luj = res.luj;
-                        $('#cover-preview').attr('src', luj).css('width', '100'); // 回显上传的图片
-                        $('input[name="cover"]').val(luj) // 把图片路径放入隐藏域里
-                    }
-                    //,accept: 'file' //允许上传的文件类型
-                    //,size: 50 //最大允许上传的文件大小
-                    //,……
-            });
+            // 初始化富文本
+            const E = window.wangEditor
+            const editor = new E('#fuwenbeng')
+                // 或者 const editor = new E( document.getElementById('div1') )
+            editor.config.uploadImgShowBase64 = true; // 可以实现手动上传图片(转换成base64格式)
+            editor.create()
 
             //监听提交
             form.on('submit(formDemo)', function(data) {
                 let field = data.field;
+                let zhuozhe = localStorage.getItem("username"); // 取回本地存储的作者信息
                 // 拿到富文本的值，传给服务端的内容
                 field.content = editor.txt.html();
+                field.zhuozhe = zhuozhe;
                 $.ajax({
                     type: 'post',
                     url: '/articleaddition',
@@ -147,6 +135,20 @@
                 })
 
                 return false;
+            });
+
+            //创建一个上传组件
+            upload.render({
+                elem: '#cover_img_upload',
+                url: '/uploadpictures',
+                done: function(res, index, upload) { //上传后的回调
+                        let luj = res.luj;
+                        $('#cover-preview').attr('src', luj).css('width', '100'); // 回显上传的图片
+                        $('input[name="cover"]').val(luj) // 把图片路径放入隐藏域里
+                    }
+                    //,accept: 'file' //允许上传的文件类型
+                    //,size: 50 //最大允许上传的文件大小
+                    //,……
             });
 
             // 加载所有分类

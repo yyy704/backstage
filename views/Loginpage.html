@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../login-js-css/login.css">
+</head>
+
+<body>
+    <!-- 背景云层 -->
+    <div id="header">
+        <div id="clouds">
+            <div class="cloud-1" data-speed="35000"></div>
+            <div class="cloud-2" data-speed="45000" data-delay="15000"></div>
+            <div class="cloud-3" data-speed="40000"></div>
+            <div class="cloud-4" data-speed="38000" data-delay="20000"></div>
+        </div>
+    </div>
+    <!-- / #header -->
+
+    <div id="content">
+        <div class="container">
+            <!-- 登录模块 -->
+            <form id="login">
+                <div id="login_header"><i class="icon-home"></i>文章后台管理系统</div>
+
+                <div id="login_content">
+                    <span>
+                        <input class="tip" name="username" type="text" maxlength="18" autocomplete="off" onclick="onClick(this);"
+                            onblur="onBlur(this);">
+                        <label for="username">用户名</label>
+                        <i class="icon-user"></i>
+                        <div class="tooltip" data-text="填写您的用户名">填写您的用户名</div>
+                    </span>
+                    <span>
+                        <input class="tip" name="password" type="password" maxlength="16" onclick="onClick(this);"
+                            onblur="onBlur(this);">
+                        <label for="password">密码</label>
+                        <i class="icon-lock"></i>
+                        <div class="tooltip" data-text="填写您的密码">填写您的密码</div>
+                    </span>
+
+                    <!-- / .option -->
+                </div>
+                <!-- / #login_content -->
+
+                <div id="login_footer">
+                    <div class="ing"></div>
+                    <button id="login_btn" type="button">登录</button>
+                </div>
+                <!-- / #login_footer -->
+
+                <div><a id="register_link" href="javascript:void(0);">新用户注册</a></div>
+            </form>
+            <!-- / #login -->
+
+            <!-- 注册模块 -->
+            <form id="register" method="post" action="register.jsp" onsubmit="return checkForm(this);">
+                <div id="register_header"><i class="icon-home"></i>新用户注册</div>
+
+                <div id="register_content">
+                    <span>
+                        <input class="tip" name="realname" type="text" maxlength="10" autocomplete="off" onclick="onClick(this);"
+                            onblur="onBlur(this);">
+                        <label for="realname">用户名</label>
+                        <i class="icon-user"></i>
+                        <div class="tooltip" data-text="填写您的用户名">填写您的用户名</div>
+                    </span>
+
+                    <span>
+                        <input class="tip" name="password" maxlength="16" type="password" onclick="onClick(this);"
+                            onblur="onBlur(this);">
+                        <label for="password">密码</label>
+                        <i class="icon-lock"></i>
+                        <div class="tooltip" data-text="填写6~16个字母或者数字">填写6~16位字母或者数字</div>
+                    </span>
+
+                    <span>
+                        <input class="tip" name="repassword" maxlength="16" type="password" onclick="onClick(this);"
+                            onblur="onBlur(this);">
+                        <label for="repassword">确认密码</label>
+                        <i class="icon-lock"></i>
+                        <div class="tooltip" data-text="请再次确认密码">请再次确认密码</div>
+                    </span>
+                </div>
+                <!-- / #register_content -->
+
+                <div id="register_footer">
+                    <div class="ing"></div>
+                    <button id="register_btn" type="submit">注册</button>
+                </div>
+                <!-- / #register_footer -->
+
+                <div><a id="login_link" href="javascript:void(0);">返回登录</a></div>
+            </form>
+            <!-- / #register -->
+
+        </div>
+        <!-- / .container -->
+    </div>
+    <!-- / #content-->
+
+    <div id="footer">
+
+        <div class="container">
+
+        </div>
+        <!-- / .container -->
+
+    </div>
+    <!-- / #footer -->
+
+</body>
+<script src="../layui/layui.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
+<script src="../login-js-css/login.js"></script>
+
+</html>

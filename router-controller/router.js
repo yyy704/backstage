@@ -27,6 +27,8 @@ router.get('/index4', controller.index4)
 router.get('/index5', controller.index5)
     // 编辑文章
 router.get('/index6', controller.index6)
+    // 登录页面
+router.get('/login', controller.login)
 
 // 分类管理
 // 获取数据库信息
@@ -65,6 +67,12 @@ router.post('/articleecho', controller.articleecho)
 
 // 编辑文章更新数据库
 router.post('/articleeditor', controller.articleeditor)
+
+// 登录页面
+router.post('/eelogin', controller.eelogin)
+
+// 分类表数据可视化
+router.get('/flbiao', controller.flbiao)
 
 // 暴露路由
 module.exports = router;

@@ -19,7 +19,10 @@
 
         <div class="layui-body">
             <!-- 内容主体区域 -->
-            <div style="padding: 15px;">内容主体区域</div>
+            <div style="padding: 15px;">
+                <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+                <div id="main" style="width: 600px;height:400px;"></div>
+            </div>
         </div>
 
         <!-- 引入头部 -->
@@ -30,12 +33,61 @@
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
     <script src="../nprogress-jc/nprogress.js"></script>
     <script src="../progress/progress.js"></script>
-    <script>
+    <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
         //JavaScript代码区域
         layui.use('element', function() {
             var element = layui.element;
 
         });
+
+        // 发送ajax请求,获取父类表
+        $.ajax({
+            url: '/flbiao',
+        }).then(res => {
+            let zhonshu = []; // 分类的数量
+            let name = []; // 分类的名称
+            res.forEach(v => {
+                zhonshu.push(v.zhonshu);
+                name.push(v.name);
+            });
+            shujukeshihau({
+                zhonshu,
+                name
+            });
+        })
+
+        function shujukeshihau(obj) {
+            let {
+                zhonshu,
+                name
+            } = obj;
+            // 指定图表的配置项和数据
+            var option = {
+                title: {
+                    text: '第一个 ECharts 实例'
+                },
+                tooltip: {},
+                legend: {
+                    data: ['销量']
+                },
+                xAxis: {
+                    data: name
+                },
+                yAxis: {},
+                series: [{
+                    name: '销量',
+                    type: 'bar',
+                    data: zhonshu,
+                    color: 'skyblue'
+                }]
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        }
     </script>
 </body>
 

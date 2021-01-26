@@ -47,6 +47,11 @@ controller.index6 = (req, res) => {
     res.render('./views/houtaibuju-Article-editor.html')
 }
 
+// 登录页面
+controller.login = (req, res) => {
+    res.render('./views/Loginpage.html')
+}
+
 // 获取数据库信息
 controller.data = async(req, res) => {
     // 查询数据库
@@ -181,12 +186,14 @@ controller.getarticle = async(req, res) => {
 // 删除文章数据
 controller.articledeletion = async(req, res) => {
     let {
-        id
+        id,
+        cover
     } = req.body;
     let sql = `delete from wengzhang where id = ${id}`;
     let result = await mysqlff(sql);
     if (result.affectedRows) {
         // 删除成功返回
+        fs.unlinkSync(cover); // 删除数据随便也删除图片
         res.json({
             errcode: 1,
             msjj: '删除成功'
@@ -232,10 +239,11 @@ controller.articleaddition = async(req, res) => {
         fenlei,
         time,
         status,
-        content
+        content,
+        zhuozhe
     } = req.body;
     // 把用户传来的数据传入数据库
-    let sql = `insert into wengzhang(title,content,Launchtime,cover,state,classification) values('${title}','${content}','${time}','${cover}','${status}','${fenlei}')`;
+    let sql = `insert into wengzhang(title,content,author,Launchtime,cover,state,classification) values('${title}','${content}','${zhuozhe}','${time}','${cover}','${status}','${fenlei}')`;
     let result = await mysqlff(sql);
     if (result.affectedRows) {
         res.json({
@@ -278,13 +286,20 @@ controller.articleeditor = async(req, res) => {
         status,
         content,
         id,
-        cover
+        cover,
+        jiutu
     } = req.body;
-    console.log(req.body);
     //更改
-    var sql = `update wengzhang set title='${title}', content='${content}',Launchtime='${time}', cover='${cover}',state='${status}',classification='${fenlei}'  where id=${id}`;
+    // 判断如果有新图片传过来就加新图片，没有就不加
+    if (cover) {
+        var sql = `update wengzhang set title='${title}', content='${content}',Launchtime='${time}', cover='${cover}',state='${status}',classification='${fenlei}'  where id=${id}`;
+    } else {
+        var sql = `update wengzhang set title='${title}', content='${content}',Launchtime='${time}',state='${status}',classification='${fenlei}'  where id=${id}`;
+    }
     let result = await mysqlff(sql);
     if (result.affectedRows) {
+        // 成功之后，删除就图
+        cover && fs.unlinkSync(jiutu);
         res.json({
             errcode: 1,
             msjj: "编辑成功"
@@ -297,6 +312,45 @@ controller.articleeditor = async(req, res) => {
     }
 }
 
+// 页面登录
+controller.eelogin = async(req, res) => {
+    let {
+        username,
+        password
+    } = req.body;
+    console.log(username, password);
+    // 查询数据库匹配是否登录成功
+    let sql = `select * from zhuozhe where username='${username}' and password='${password}'`;
+    let rows = await mysqlff(sql);
+    if (rows.length != 0) {
+        res.json({
+            errcode: 1,
+            msjj: "登录成功"
+        });
+    } else {
+        res.json({
+            errcode: 102,
+            msjj: '登录失败'
+        })
+    };
+
+}
+
+// 分类表数据可视化
+controller.flbiao = async(req, res) => {
+    // 链表查询 文章的那些分类 和 条数
+    let sql = `select count(*) zhonshu,t2.name  from wengzhang as t1 left join shuming as t2 on t1.classification = t2.id group by t2.id`;
+    let jieg = await mysqlff(sql);
+    if (jieg.length != 0) {
+        res.json(jieg)
+    } else {
+        res.json({
+            errcode: 102,
+            msjj: '数据错误'
+        })
+    }
+
+}
 
 
 // 暴露控制器
