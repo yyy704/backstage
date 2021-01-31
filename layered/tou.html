@@ -1,41 +1,414 @@
+<style>
+    .wanda,
+    .mimak {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        top: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.3);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .niek {
+        position: relative;
+        width: 300px;
+        height: 400px;
+        background-image: linear-gradient(to top, rgb(38, 0, 255), rgb(0, 162, 255));
+        text-align: center;
+    }
+    
+    .myimg {
+        width: 200px;
+        height: 200px;
+        margin-top: 40px;
+    }
+    
+    #file {
+        display: none;
+    }
+    
+    .dlk {
+        display: none;
+    }
+    
+    .qd,
+    .qx {
+        width: 100px;
+        height: 40px;
+        border-radius: 10px;
+        outline: 0;
+        cursor: pointer;
+    }
+    
+    .sc {
+        width: 200px;
+        height: 40px;
+        border-radius: 10px;
+        outline: 0;
+        cursor: pointer;
+    }
+    
+    .xiaocc {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 20px;
+        height: 20px;
+        border: 1px solid #000;
+        color: #000;
+        line-height: 20px;
+        text-align: center;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+    
+    .mima {
+        position: relative;
+        width: 300px;
+        height: 300px;
+        background-color: pink;
+        margin: 0 auto;
+        padding-top: 20px;
+    }
+    
+    .mima>p {
+        margin-left: 66px;
+    }
+    
+    .mima>p>input {
+        height: 30px;
+        border-radius: 10px;
+        outline: 0;
+        border: 0;
+        padding-left: 5px;
+    }
+    
+    .mima>p>button {
+        width: 84px;
+        height: 30px;
+        border-radius: 10px;
+        outline: 0;
+        cursor: pointer;
+    }
+    
+    .mxcc {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 20px;
+        height: 20px;
+        border: 1px solid #000;
+        color: #000;
+        line-height: 20px;
+        text-align: center;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+</style>
 <div class="layui-header">
     <div class="layui-logo">layui 后台布局</div>
     <!-- 头部区域（可配合layui已有的水平导航） -->
     <ul class="layui-nav layui-layout-left">
-        <li class="layui-nav-item"><a href="">控制台</a></li>
+        <li class="layui-nav-item"><a href="/abult">数据表</a></li>
         <li class="layui-nav-item"><a href="">商品管理</a></li>
         <li class="layui-nav-item"><a href="">用户</a></li>
-        <li class="layui-nav-item">
-            <a href="javascript:;">其它系统</a>
-            <dl class="layui-nav-child">
-                <dd><a href="">邮件管理</a></dd>
-                <dd><a href="">消息管理</a></dd>
-                <dd><a href="">授权管理</a></dd>
-            </dl>
-        </li>
     </ul>
     <ul class="layui-nav layui-layout-right">
         <li class="layui-nav-item">
             <a href="javascript:;">
-                <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                <img src="http://t.cn/RCzsdCq" class="layui-nav-img" id="headPortrait">
                 <span id="usname"></span>
             </a>
             <dl class="layui-nav-child">
-                <dd><a href="">基本资料</a></dd>
-                <dd><a href="">安全设置</a></dd>
+                <dd><a href="javascript:;" id="avatar">修改头像</a></dd>
+                <dd><a href="javascript:;" id="Changepassword">修改密码</a></dd>
             </dl>
         </li>
-        <li class="layui-nav-item"><a href="javascript:;" id="tuilei">退了</a></li>
+        <li class="layui-nav-item"><a href="javascript:;" id="tuilei">退出系统</a></li>
     </ul>
 </div>
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.5.1/jquery.js"></script>
 <script>
+    let headPortrait = $('#headPortrait')[0];
+
     // 取回本地存储的值
     let username = localStorage.getItem("username");
+    let id = localStorage.getItem("id");
+    let xintu = localStorage.getItem('headportrait');
+
+    // 把本地存储的图片地址赋值给头像
+    $('#headPortrait')[0].src = xintu;
+
     // 赋值给id = usname
     $('#usname').text(username);
     $('#tuilei').on('click', function() {
         localStorage.clear();
         location.href = '/login';
+    });
+
+    // 创建修改头像的模态框
+    function moban() {
+        let div = `<div class="wanda dlk" >
+                    <div class="niek">
+                        <div class="xiaocc">×</div>
+                        <img src="" alt="" class="myimg">
+                        <input type="file" id="file">
+                        <p>
+                        <br>
+                            <button class="sc" id="upload">上传头像</button>
+                        </p>
+                        <p>
+                        <br>
+                            <button class="qd">确定更换</button>
+                            <button class="qx">取消更换</button>
+                        </p>
+                    </div>
+                </div>`;
+        $('.layui-header').prepend(div); // 追加模板
+    };
+    moban();
+
+    // 点击更换头像 
+    $('#avatar').on('click', function() {
+        console.log('avatar');
+        $('.wanda').removeClass('dlk'); // 显示模态框
+        let lujing = headPortrait.src; // 获取头像
+        $('.myimg').attr('src', lujing); // 回显原头像
+    });
+    // 点击上传头像
+    $('.layui-header').on('click', '#upload', function() {
+        console.log($('#file')[0]);
+        $('#file').click();
+    });
+    // 上传图片回显
+    $('.layui-header').on("change", '#file', function() {
+        // 拿到头像的二进制
+        let formData = new FormData();
+        // file.files[0] 图片的二进制
+        formData.append('avatar', file.files[0]);
+        // 发送ajax
+        $.ajax({
+            type: 'post',
+            url: '/huixian',
+            processData: false, // 告诉jquery不需要处理数据
+            contentType: false, //不需要设置编码
+            data: formData,
+            dataType: 'json'
+        }).then(res => {
+            let {
+                tupian
+            } = res;
+            $('.myimg')[0].src = tupian;
+        })
+
+    });
+    // 点击小差差关闭模态框
+    $('.layui-header').on('click', '.xiaocc', function() {
+        // 拿到回显的图片删除文件夹中的没有上传的图片
+        let huixiantu = $('.myimg')[0].src;
+        huixiantu = huixiantu.substr(22);
+        console.log(huixiantu);
+        // 如果图片没有更换，就直接关闭不再执行下面
+        if (xintu === huixiantu) {
+            $('.wanda').addClass('dlk');
+            return;
+        }
+        // 发送ajax删除文件夹中的图片路径
+        $.ajax({
+            type: 'post',
+            url: '/delete',
+            data: {
+                huixiantu
+            },
+            dataType: 'json'
+        }).then(src => {
+            let {
+                errcode,
+                msjj
+            } = src;
+            console.log(msjj);
+            if (errcode == 1) {
+                $('.wanda').addClass('dlk');
+            }
+        });
+    });
+    // 点击取消
+    $('.layui-header').on('click', '.qx', function() {
+        // 拿到回显的图片删除文件夹中的没有上传的图片
+        let huixiantu = $('.myimg')[0].src;
+        huixiantu = huixiantu.substr(22);
+        console.log(huixiantu);
+        // 如果图片没有更换，就直接关闭不再执行下面
+        if (xintu === huixiantu) {
+            $('.wanda').addClass('dlk');
+            return;
+        }
+        // 发送ajax删除文件夹中的图片路径
+        $.ajax({
+            type: 'post',
+            url: '/delete',
+            data: {
+                huixiantu
+            },
+            dataType: 'json'
+        }).then(src => {
+            let {
+                errcode,
+                msjj
+            } = src;
+            console.log(msjj);
+            if (errcode == 1) {
+                $('.wanda').addClass('dlk');
+            }
+        });
+        // $('.wanda').addClass('dlk');  
+    });
+
+    // 点击确定跟换发送ajax请求
+    $('.layui-header').on('click', '.qd', function() {
+        let xintu = $('.myimg')[0].src; // 获取头像
+        xintu = xintu.substr(22) // 截断字符串
+        let aa = headPortrait.src.substr(22);
+        // 头像没有改变直接退出，并关闭模态框
+        if (aa === xintu) {
+            $('.wanda').addClass('dlk');
+            return;
+        }
+        $.ajax({
+            type: 'post',
+            url: '/Changeyourface',
+            data: {
+                id,
+                xintu
+            },
+            dataType: 'json'
+        }).then(res => {
+            let {
+                errcode,
+                msjj,
+                xintu
+            } = res;
+            if (errcode == 1) {
+                alert(msjj);
+                localStorage.removeItem('tup'); // 先删除旧的图片地址
+                localStorage.setItem('tup', xintu); // 添加新的图片地址
+                $('#headPortrait')[0].src = xintu;
+                $('.wanda').addClass('dlk');
+            } else {
+                alert(msjj);
+            }
+        });
+    })
+
+    // 修改密码的模态框
+    function mitaik() {
+        let mtk = `
+                <div class="mimak dlk" >
+                    <div class="mima">
+                        <div class="mxcc">×</div>
+                        <p>
+                            <br>
+                            旧密码：<br>
+                            <input type="password" placeholder="请输入旧密码" name="jiupassword" id="jiupassword">
+                        </p>
+                        <p>
+                            <br>
+                            新密码：<br>
+                            <input type="password" placeholder="请输入新密码" name="xinpassword" id="xinpassword">
+                        </p>
+                        <p>
+                            <br>
+                            确认新密码：<br>
+                            <input type="password" placeholder="请确认新密码" name="quepassword" id="quepassword">
+                        </p>
+                        <p> 
+                            <br>
+                            <button id="querxiugai">确认</button>
+                            <button id="quxiao">取消</button>
+                        </p>
+                    </div>
+                </div>
+                `;
+        $('.layui-header').prepend(mtk); // 追加模板
+    };
+    mitaik();
+
+    // 点击弹出修改密码框
+    $('#Changepassword').on('click', function() {
+        $('.mimak').removeClass('dlk'); // 显示模块框
+    });
+
+    // 点击×关闭密码框
+    $('.layui-header').on('click', '.mxcc', function() {
+        // 清空所有密码框的值
+        $('#jiupassword').val(""); // 旧密码
+        $('#xinpassword').val(""); // 新密码
+        $('#quepassword').val(""); // 确认新密码
+        $('.mimak').addClass('dlk'); // 隐藏模块框
+    });
+
+    // 点击取消关闭密码框
+    $('.layui-header').on('click', '#quxiao', function() {
+        // 清空所有密码框的值
+        $('#jiupassword').val(""); // 旧密码
+        $('#xinpassword').val(""); // 新密码
+        $('#quepassword').val(""); // 确认新密码
+        $('.mimak').addClass('dlk'); // 隐藏模块框
+    });
+
+    $('.layui-header').on('click', '#querxiugai', function() {
+        let jiumima = $('#jiupassword').val(); // 旧密码
+        let xinmima = $('#xinpassword').val(); // 新密码
+        let querenmima = $('#quepassword').val(); // 确认新密码
+        // 判断所有的密码框不能为空
+        if (jiumima == '' || xinmima == '' || querenmima == '') {
+            alert('密码框不能为空')
+            return;
+        };
+        let migui = /[0-9a-zA-Z]{6,16}/; // 判断密码正则是否到一定的长度
+        if (!migui.test(xinmima)) {
+            alert('密码格式不对,新密码需要6-16位数组或英文');
+            return;
+        };
+        // 判断新密码和确认密码是否一致
+        if (xinmima !== querenmima) {
+            // 不一致提示用户，退出函数
+            alert('两次密码不一致')
+            return;
+        };
+        // 发送ajax去后端更改密码
+        let id_y = localStorage.getItem("id"); // 获取本地存储的id
+        $.ajax({
+            type: 'post',
+            url: '/Changepassword',
+            data: {
+                jiumima,
+                xinmima,
+                id_y
+            },
+            dataType: 'json'
+        }).then(src => {
+            let {
+                errcode,
+                msjj
+            } = src;
+            if (errcode == 1) {
+                // 清空所有密码框的值
+                $('#jiupassword').val(""); // 旧密码
+                $('#xinpassword').val(""); // 新密码
+                $('#quepassword').val(""); // 确认新密码
+                alert(msjj);
+                $('.mimak').addClass('dlk'); // 隐藏模块框
+            } else {
+                // 清空所有密码框的值
+                $('#jiupassword').val(""); // 旧密码
+                $('#xinpassword').val(""); // 新密码
+                $('#quepassword').val(""); // 确认新密码
+                alert(msjj)
+            }
+        })
     })
 </script>

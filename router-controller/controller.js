@@ -1,4 +1,4 @@
-const mysqlff = require('../mysql/mysql.js');
+const mysqlff = require('../mysqls/mysqls.js');
 const fs = require('fs');
 
 
@@ -318,14 +318,18 @@ controller.eelogin = async(req, res) => {
         username,
         password
     } = req.body;
-    console.log(username, password);
     // 查询数据库匹配是否登录成功
     let sql = `select * from zhuozhe where username='${username}' and password='${password}'`;
     let rows = await mysqlff(sql);
+    let headportrait = rows[0].headportrait;
+    let id = rows[0].id;
+
     if (rows.length != 0) {
         res.json({
             errcode: 1,
-            msjj: "登录成功"
+            msjj: "登录成功",
+            id,
+            headportrait
         });
     } else {
         res.json({
@@ -350,6 +354,104 @@ controller.flbiao = async(req, res) => {
         })
     }
 
+}
+
+// 头像回显
+controller.huixian = async(req, res) => {
+    if (req.file) {
+        let {
+            originalname,
+            destination,
+            filename
+        } = req.file;
+        let jqlength = originalname.lastIndexOf('.'); // 截取的长度
+        let suffix = originalname.substring(jqlength); // 截取文件的后缀
+        let jiu = `${destination}${filename}`; // 原文件
+        let yll = `${destination}${filename}${suffix}`; // 新文件
+        // 新文件替换旧文件
+        fs.rename(jiu, yll, (err) => {
+            if (err) throw err;
+            res.json({
+                tupian: yll
+            })
+        });
+    }
+}
+
+// 更换头像
+controller.Changeyourface = async(req, res) => {
+    let {
+        xintu,
+        id
+    } = req.body;
+    console.log(xintu, id);
+    // 查询作者数据库
+    let sql;
+    if (req.body) {
+        sql = `update zhuozhe set headportrait='${xintu}'  where id=${id}`;
+    } else {
+        res.json({
+            errcode: 5,
+            msjj: "更换成功",
+        });
+        return;
+    }
+    let ccg = await mysqlff(sql);
+    if (ccg.affectedRows) {
+        res.json({
+            errcode: 1,
+            msjj: "更换成功",
+            xintu
+        });
+    } else {
+        res.json({
+            errcode: 102,
+            msjj: '更换失败'
+        })
+    }
+}
+
+
+// 取消删掉回显的图片
+controller.delete = async(req, res) => {
+    let {
+        huixiantu
+    } = req.body;
+    // 删除回显的图片
+    fs.unlink(huixiantu, function(err) {
+        if (err) throw err;
+        res.json({
+            errcode: 1,
+            msjj: '取消'
+        })
+    });
+}
+
+// 更改密码
+controller.Changepassword = async(req, res) => {
+    let {
+        jiumima,
+        xinmima,
+        id_y
+    } = req.body;
+    // try {
+    //有可能出现错误的代码写在这里
+    let sql = `update zhuozhe set password='${xinmima}'  where password=${jiumima} and id=${id_y}`;
+    // } catch {
+    // console.log('chuole');
+    // };
+    let jieg = await mysqlff(sql);
+    if (jieg.affectedRows) {
+        res.json({
+            errcode: 1,
+            msjj: "密码跟换成功",
+        });
+    } else {
+        res.json({
+            errcode: 102,
+            msjj: '原密码输入不正确，请输入正确的原密码'
+        })
+    };
 }
 
 

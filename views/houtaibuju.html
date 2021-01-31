@@ -19,9 +19,10 @@
 
         <div class="layui-body">
             <!-- 内容主体区域 -->
-            <div style="padding: 15px;">
+            <div style="padding: 15px; display: flex;">
                 <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
                 <div id="main" style="width: 600px;height:400px;"></div>
+                <div id="yuef" style="width: 600px;height:400px;"></div>
             </div>
         </div>
 
@@ -37,10 +38,10 @@
     <script type="text/javascript">
         // 基于准备好的dom，初始化echarts实例
         var myChart = echarts.init(document.getElementById('main'));
+        var myYuef = echarts.init(document.getElementById('yuef'));
         //JavaScript代码区域
         layui.use('element', function() {
             var element = layui.element;
-
         });
 
         // 发送ajax请求,获取父类表
@@ -67,9 +68,11 @@
             // 指定图表的配置项和数据
             var option = {
                 title: {
-                    text: '第一个 ECharts 实例'
+                    text: '文章分类统计'
                 },
-                tooltip: {},
+                tooltip: {
+
+                },
                 legend: {
                     data: ['销量']
                 },
@@ -88,6 +91,24 @@
             // 使用刚指定的配置项和数据显示图表。
             myChart.setOption(option);
         }
+
+        // function yuef() {
+        //     let option = {
+        //         xAxis: {
+        //             type: 'category',
+        //             data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        //         },
+        //         yAxis: {
+        //             type: 'value'
+        //         },
+        //         series: [{
+        //             data: [150, 230, 224, 218, 135, 147, 260],
+        //             type: 'line'
+        //         }]
+        //     };
+        //     myYuef.setOption(option);
+        // }
+        // yuef();
     </script>
 </body>
 

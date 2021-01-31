@@ -178,13 +178,17 @@
 	        }).then(src => {
 	            let {
 	                errcode,
-	                msjj
+	                msjj,
+	                id,
+	                headportrait
 	            } = src;
 	            layui.use('layer', function() {
 	                var layer = layui.layer;
 	                if (errcode == 1) {
 	                    // 成功就把作者存储到本地存储localStorage
 	                    localStorage.setItem("username", username);
+	                    localStorage.setItem("id", id);
+	                    localStorage.setItem("headportrait", headportrait);
 	                    layer.msg(msjj);
 	                    location.href = '/abult';
 	                } else {

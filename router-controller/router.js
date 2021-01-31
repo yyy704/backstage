@@ -9,6 +9,11 @@ var upload = multer({
     dest: 'uploads/'
 })
 
+// 定义上传的目录
+var touxiang = multer({
+    dest: 'touxiang/'
+})
+
 
 // 引入模块
 const controller = require('./controller');
@@ -73,6 +78,18 @@ router.post('/eelogin', controller.eelogin)
 
 // 分类表数据可视化
 router.get('/flbiao', controller.flbiao)
+
+// 回显头像
+router.post('/huixian', touxiang.single('avatar'), controller.huixian)
+
+// 更换头像
+router.post('/Changeyourface', controller.Changeyourface)
+
+// 取消上传删除回显的图片
+router.post('/delete', controller.delete)
+
+// 更改密码
+router.post('/Changepassword', controller.Changepassword)
 
 // 暴露路由
 module.exports = router;
